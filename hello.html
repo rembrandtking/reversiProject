@@ -1,13 +1,75 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>My test page</title>
-  </head>
-  <body>
-      <h1>Dit is een mooie pagina</h1>
-    <p>dit is <strong>mijn</strong> pagina</p>
-    <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started" title="mozilla">Link naar mozilla site</a>
-    <img src="https://www.google.com/url?sa=i&url=http%3A%2F%2Fwww.minipret.nl%2FKleuter-Puzzels-spelletjes.html&psig=AOvVaw0wkhWhKoOW-of8_TqTqMF0&ust=1610631931056000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMDd1tKFme4CFQAAAAAdAAAAABAF">
-  </body>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- the below three lines are a fix to get HTML5 semantic elements working in old versions of Internet Explorer-->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header>
+        <h1>Header</h1>
+    </header>
+    <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Our team</a></li>
+          <li><a href="#">Projects</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+  
+         <!-- A Search form is another common non-linear way to navigate through a website. -->
+  
+         <form>
+           <input type="search" name="q" placeholder="Search query">
+           <input type="submit" value="Go!">
+         </form>
+    </nav>
+    <main>
+           <article>
+            <h1>Dit is een mooie pagina</h1>
+                <h2>Eerst wat text</h2>
+                    <p>dit is <strong>mijn</strong> pagina</p>
+                <h2>dan een linkje</h2>    
+                    <p><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started" title="mozilla">Link naar mozilla site</a></p>
+                <h2>Daarna een klein plaatje</h2>
+                    <img src="https://www.google.com/url?sa=i&url=http%3A%2F%2Fwww.minipret.nl%2FKleuter-Puzzels-spelletjes.html&psig=AOvVaw0wkhWhKoOW-of8_TqTqMF0&ust=1610631931056000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMDd1tKFme4CFQAAAAAdAAAAABAF">
+                <h2>A list</h2>
+                    <ul>
+                        <li>milk</li>
+                        <li>eggs</li>
+                        <li>bread</li>
+                        <li>hummus</li>
+                    </ul>
+                <h2>Emphasis</h2>
+                    <p>I am <em>glad</em> you weren't <em>late</em>.</p>
+            </article>
+        <aside>
+            <h2>Related</h2>
+    
+            <ul>
+              <li><a href="#">Oh I do like to be beside the seaside</a></li>
+              <li><a href="#">Oh I do like to be beside the sea</a></li>
+              <li><a href="#">Although in the North of England</a></li>
+              <li><a href="#">It never stops raining</a></li>
+              <li><a href="#">Oh well...</a></li>
+            </ul>
+          </aside>
+            <!--
+            <i> is used to convey a meaning traditionally conveyed by italic: foreign words, taxonomic designation, technical terms, a thought...
+            <b> is used to convey a meaning traditionally conveyed by bold: key words, product names, lead sentence...
+            <u> is used to convey a meaning traditionally conveyed by underline: proper name, misspelling...
+            -->
+    </main>
+    <footer>
+        <p>©Copyright 2050 by Joris And Rembrandt. All rights reversed.</p>
+    </footer>
+</body>
 </html>
