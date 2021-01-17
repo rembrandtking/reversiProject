@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Balloons: a two player word game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap" rel="stylesheet"> 
+    <title>Reversi</title>
     <link rel="stylesheet" href="stylesheets/game.css" />
   </head>
   <body>
     <main>
 	<h1>Reversi</h1>
 	<h3>Score</h3>
-	<h2>Current Turn:</h2>
+	<section id="status" class="centerXY">
+
+	</section>
 	<h2>0 - 0</h2>
 	
 	
@@ -24,21 +25,8 @@
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
-			<td>o</td>
 		</tr>
 		<tr>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-			<td>o</td>
-		</tr>
-		<tr>
-			<td>o</td>
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
@@ -57,6 +45,15 @@
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
+		</tr>
+		<tr>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
 			<td>o</td>
 		</tr>
 		<tr>
@@ -68,6 +65,16 @@
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
+
+		</tr>
+		<tr>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
+			<td>o</td>
 			<td>o</td>
 		</tr>
 		<tr>
@@ -79,10 +86,8 @@
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
-			<td>o</td>
 		</tr>
 		<tr>
-			<td>o</td>
 			<td>o</td>
 			<td>o</td>
 			<td>o</td>
@@ -98,6 +103,11 @@
 	  
 	  </br> Relinquish
 
-      
+	  <script src="javascripts/config.js"></script>
+	  <script src="javascripts/statuses.js"></script>
+	  <script src="javascripts/messages.js"></script>
+	  <script src="javascripts/board.js"></script>
+	  <script src="javascripts/ui-right.js"></script>	  
+	  <script src="javascripts/interactions.js"></script>
   </body>
 </html>
