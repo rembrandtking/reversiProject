@@ -1,4 +1,5 @@
-let clickSound = new Audio("../data/basicsfx.wav");
+let soundWhite = new Audio("../data/c.mp3");
+let soundBlue = new Audio("../data/g.mp3");
 
 function GameState(visibleWordBoard, sb, socket) {
     this.playerType = null;
@@ -39,6 +40,12 @@ function GameState(visibleWordBoard, sb, socket) {
     //we now make this player move
 
     this.boardManager.placePiece(clickedBox, color);
+    if(color == "WHITE"){
+      soundWhite.play();
+    }
+    else{
+      soundBlue.play();
+    }
     //clickSound.play();
 
     //if the current player didnt place this part, no need to resend messages.
@@ -57,7 +64,7 @@ function GameState(visibleWordBoard, sb, socket) {
       socket.send(JSON.stringify(outgoingMsg));
     }
     else{
-      sb.setStatus(Status["player1Wait"]);
+      sb.setStatus(Status["player2Wait"]);
       var outgoingMsg = Messages.O_SET_BLUE;
       outgoingMsg.data = clickedBox;
       socket.send(JSON.stringify(outgoingMsg));
