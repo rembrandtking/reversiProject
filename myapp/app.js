@@ -16,6 +16,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/play", indexRouter);
 
+
 //TODO: move to routes/index
 app.get("/", (req, res) => {
   res.render("splash.ejs", {
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 var server = http.createServer(app);
 const wss = new websocket.Server({ server });
+
 
 var websockets = {}; //property: websocket, value: game
 
@@ -66,16 +68,11 @@ wss.on("connection", function connection(ws) {
   /*
    * inform the client about its assigned player type
    */
-  con.send(playerType == "A" ? messages.S_PLAYER_A : messages.S_PLAYER_B);
+  con.send(playerType == "WHITE" ? messages.S_PLAYER_WHITE : messages.S_PLAYER_BLUE);
+  if(playerType == "BLUE") con.send(messages.S_BEGIN_GAME); 
 
-  /*
-   * client B receives the target word (if already available)
-   */
-  if (playerType == "B" && currentGame.getWord() != null) {
-    let msg = messages.O_TARGET_WORD;
-    msg.data = currentGame.getWord();
-    con.send(JSON.stringify(msg));
-  }
+
+  
 
   /*
    * once we have two players, there is no way back;
@@ -96,37 +93,38 @@ wss.on("connection", function connection(ws) {
     let oMsg = JSON.parse(message);
 
     let gameObj = websockets[con.id];
-    let isPlayerA = gameObj.playerA == con ? true : false;
+    let isPlayerWHITE = gameObj.playerWHITE == con ? true : false;
 
-    if (isPlayerA) {
-      /*
-       * player A cannot do a lot, just send the target word;
-       * if player B is already available, send message to B
-       */
-      if (oMsg.type == messages.T_TARGET_WORD) {
-        gameObj.setWord(oMsg.data);
 
-        if (gameObj.hasTwoConnectedPlayers()) {
-          gameObj.playerB.send(message);
-        }
-      }
-    } else {
-      /*
-       * player B can make a guess;
-       * this guess is forwarded to A
-       */
-      if (oMsg.type == messages.T_MAKE_A_GUESS) {
-        gameObj.playerA.send(message);
-        gameObj.setStatus("CHAR GUESSED");
+
+    if (isPlayerWHITE) {
+      if (oMsg.type == messages.T_SET_WHITE) {
+        gameObj.playerBLUE.send(message);
+        gameObj.setStatus("SET WHITE PIECE");
       }
 
-      /*
-       * player B can state who won/lost
-       */
       if (oMsg.type == messages.T_GAME_WON_BY) {
         gameObj.setStatus(oMsg.data);
         //game was won by somebody, update statistics
         gameStatus.gamesCompleted++;
+      }
+    } 
+    else {
+      if (oMsg.type == messages.T_SET_BLUE) {
+        gameObj.playerWHITE.send(message);
+        gameObj.setStatus("SET BLUE PIECE");
+      }
+
+      if (oMsg.type == messages.T_GAME_WON_BY) {
+        gameObj.setStatus(oMsg.data);
+        //game was won by somebody, update statistics
+        gameStatus.gamesCompleted++;
+      }
+
+      //tell white they can start
+      if(oMsg.type == messages.T_BEGIN_GAME){
+        gameObj.playerWHITE.send(message);
+        gameObj.setStatus("GAME BEGIN");
       }
     }
   });
@@ -153,17 +151,17 @@ wss.on("connection", function connection(ws) {
          * close it
          */
         try {
-          gameObj.playerA.close();
-          gameObj.playerA = null;
+          gameObj.playerWHITE.close();
+          gameObj.playerWHITE = null;
         } catch (e) {
-          console.log("Player A closing: " + e);
+          console.log("Player WHITE closing: " + e);
         }
 
         try {
-          gameObj.playerB.close();
-          gameObj.playerB = null;
+          gameObj.playerBLUE.close();
+          gameObj.playerBLUE = null;
         } catch (e) {
-          console.log("Player B closing: " + e);
+          console.log("Player BLUE closing: " + e);
         }
       }
     }

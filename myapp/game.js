@@ -1,7 +1,7 @@
 /* every game has two players, identified by their WebSocket */
 var game = function(gameID) {
-    this.playerA = null;
-    this.playerB = null;
+    this.playerWHITE = null;
+    this.playerBLUE = null;
     this.id = gameID;
     this.wordToGuess = null; //first player to join the game, can set the word
     this.gameState = "0 JOINT"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
@@ -14,10 +14,11 @@ var game = function(gameID) {
   game.prototype.transitionStates["0 JOINT"] = 0;
   game.prototype.transitionStates["1 JOINT"] = 1;
   game.prototype.transitionStates["2 JOINT"] = 2;
-  game.prototype.transitionStates["CHAR GUESSED"] = 3;
-  game.prototype.transitionStates["A"] = 4; //A won
-  game.prototype.transitionStates["B"] = 5; //B won
-  game.prototype.transitionStates["ABORTED"] = 6;
+  game.prototype.transitionStates["WHITEPLAYED"] = 3;
+  game.prototype.transitionStates["BLUEPLAYED"] = 4;
+  game.prototype.transitionStates["WHITE"] = 5; //A won
+  game.prototype.transitionStates["BLUE"] = 6; //B won
+  game.prototype.transitionStates["ABORTED"] = 7;
   
   /*
    * Not all game states can be transformed into each other;
@@ -25,13 +26,14 @@ var game = function(gameID) {
    * They are checked each time a state change is attempted.
    */
   game.prototype.transitionMatrix = [
-    [0, 1, 0, 0, 0, 0, 0], //0 JOINT
-    [1, 0, 1, 0, 0, 0, 0], //1 JOINT
-    [0, 0, 0, 1, 0, 0, 1], //2 JOINT (note: once we have two players, there is no way back!)
-    [0, 0, 0, 1, 1, 1, 1], //CHAR GUESSED
-    [0, 0, 0, 0, 0, 0, 0], //A WON
-    [0, 0, 0, 0, 0, 0, 0], //B WON
-    [0, 0, 0, 0, 0, 0, 0] //ABORTED
+    [0, 1, 0, 0, 0, 0, 0, 0], //0 JOINT
+    [1, 0, 1, 0, 0, 0, 0, 0], //1 JOINT
+    [0, 0, 0, 1, 0, 0, 0, 1], //2 JOINT (note: once we have two players, there is no way back!)
+    [0, 0, 0, 0, 1, 1, 1, 1], //TURN PLAYER WHITE
+    [0, 0, 0, 1, 0, 1, 1, 1], //TURN PLAYER BLUE
+    [0, 0, 0, 0, 0, 0, 0, 0], //WHITE WON
+    [0, 0, 0, 0, 0, 0, 0, 0], //BLUE WON
+    [0, 0, 0, 0, 0, 0, 0, 0] //ABORTED
   ];
   
   game.prototype.isValidTransition = function(from, to) {
@@ -154,12 +156,12 @@ var game = function(gameID) {
       this.setStatus("2 JOINT");
     }
   
-    if (this.playerA == null) {
-      this.playerA = p;
-      return "A";
+    if (this.playerWHITE == null) {
+      this.playerWHITE = p;
+      return "WHITE";
     } else {
-      this.playerB = p;
-      return "B";
+      this.playerBLUE = p;
+      return "BLUE";
     }
   };
   

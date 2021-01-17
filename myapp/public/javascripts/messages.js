@@ -15,31 +15,32 @@
       type: "GAME-ABORTED"
     };
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
-  
-    /*
-     * Server to client: choose target word
-     */
-    exports.O_CHOOSE = { type: "CHOOSE-WORD" };
-    exports.S_CHOOSE = JSON.stringify(exports.O_CHOOSE);
+    
+
+    //server to player, if blue has joined white can start placing pieces
+    exports.T_BEGIN_GAME = "BEGIN-GAME";
+    exports.O_BEGIN_GAME = { type: exports.T_BEGIN_GAME };
+    exports.S_BEGIN_GAME = JSON.stringify(exports.O_BEGIN_GAME);
+
   
     /*
      * Server to client: set as player white (1)
      */
     exports.T_PLAYER_TYPE = "PLAYER-TYPE";
-    exports.O_PLAYER_A = {
+    exports.O_PLAYER_WHITE = {
       type: exports.T_PLAYER_TYPE,
       data: "WHITE"
     };
-    exports.S_PLAYER_A = JSON.stringify(exports.O_PLAYER_A);
+    exports.S_PLAYER_WHITE = JSON.stringify(exports.O_PLAYER_WHITE);
   
     /*
      * Server to client: set as player blue (2)
      */
-    exports.O_PLAYER_B = {
+    exports.O_PLAYER_BLUE = {
       type: exports.T_PLAYER_TYPE,
       data: "BLUE"
     };
-    exports.S_PLAYER_B = JSON.stringify(exports.O_PLAYER_B);
+    exports.S_PLAYER_BLUE = JSON.stringify(exports.O_PLAYER_BLUE);
   
     /*
      * Player A to server OR server to Player B, where did white place a piece?
