@@ -36,7 +36,7 @@ body {
   text-align: center;
 }
 
-.grid-item, .grid-item-BLUE, .grid-item-WHITE {
+.grid-item, .grid-item-BLUE, .grid-item-WHITE, .grid-item-valid {
   margin-top: 5%;
   display: inline-block;
 
@@ -47,13 +47,7 @@ body {
  
 }
 
-.grid-item:hover{
-  background-color: #686d76;
-  opacity: 50%;
-  transition: 0.05s;
-}
-
-.grid-item-WHITE, .grid-item-BLUE {
+.grid-item-WHITE, .grid-item-BLUE, .grid-item-valid {
   background-color: #eeeeee;
   
   display: inline-block;
@@ -62,6 +56,18 @@ body {
 .grid-item-BLUE {
   background-color: #19d3da;
 }
+
+.grid-item-valid {
+  background-color: #686d76;
+  opacity: 25%;
+}
+
+
+.grid-item-valid:hover{
+  opacity: 50%;
+  transition: 0.05s;
+}
+
 
 .statusBar {
   margin-top: 50px;
