@@ -1,1 +1,11 @@
-dit wordt nog een leuk project!!
+<!DOCTYPE html>
+<html>
+let myName = "Rembrandt";
+  <head>
+    <meta charset="utf-8">
+    <title>My test page</title>
+  </head>
+  <body>
+    <p>This is my page</p>
+  </body>
+</html>

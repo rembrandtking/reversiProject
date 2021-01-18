@@ -1,0 +1,79 @@
+body {
+  text-align: center;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: #eeeeee;
+  background-color: #373a40;
+}
+
+.title{
+ font-size: 100px;
+}
+
+.score{
+  font-size: 75px;
+}
+
+.blue {
+  color: #19d3da;
+}
+
+
+.board{
+  height: 750px;
+  width: 750px;
+
+  margin: auto;
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 5px;
+  background-color: #686d76;
+}
+
+.grid-box {
+  background-color: #373a40;
+  text-align: center;
+}
+
+.grid-item, .grid-item-BLUE, .grid-item-WHITE {
+  margin-top: 5%;
+  display: inline-block;
+
+  background-color: #373a40;
+  height: 90%;
+  width: 90%;
+  border-radius: 50%;
+ 
+}
+
+.grid-item:hover{
+  background-color: #686d76;
+  opacity: 50%;
+  transition: 0.05s;
+}
+
+.grid-item-WHITE, .grid-item-BLUE {
+  background-color: #eeeeee;
+  
+  display: inline-block;
+}
+
+.grid-item-BLUE {
+  background-color: #19d3da;
+}
+
+.statusBar {
+  margin-top: 50px;
+  display: inline-block;
+
+  color: #eeeeee;
+  background-color: #686d76;
+
+  width: 600px;
+  height: 50px;
+  border-radius: 1%;
+  text-align: center;
+}
+
+

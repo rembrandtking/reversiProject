@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reversi</title>
+    <link rel="stylesheet" href="stylesheets/game.css" />
+  </head>
+  <body>
+    <main>
+	<div class ="title">Reversi</div>
+	</br>
+	<div class="score">0 -<span class = "blue">- 0</div></div>
+	</br>
+	<div class = "board">
+		<div class="grid-box"><div class="grid-item" id = "0"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "1"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "2"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "3"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "4"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "5"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "6"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "7"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "8"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "9"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "10"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "11"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "12"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "13"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "14"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "15"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "16"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "17"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "18"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "19"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "20"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "21"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "22"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "23"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "24"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "25"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "26"></div></div>  
+		<div class="grid-box"><div class="grid-item-WHITE" id = "27"></div></div>
+		<div class="grid-box"><div class="grid-item-BLUE" id = "28"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "29"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "30"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "31"></div></div> 
+		<div class="grid-box"><div class="grid-item" id = "32"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "33"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "34"></div></div>  
+		<div class="grid-box"><div class="grid-item-BLUE" id = "35"></div></div>
+		<div class="grid-box"><div class="grid-item-WHITE" id = "36"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "37"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "38"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "39"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "40"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "41"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "42"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "43"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "44"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "45"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "46"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "47"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "48"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "49"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "50"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "51"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "52"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "53"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "54"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "55"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "56"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "57"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "58"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "59"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "60"></div></div>  
+		<div class="grid-box"><div class="grid-item" id = "61"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "62"></div></div>
+		<div class="grid-box"><div class="grid-item" id = "63"></div></div>  
+	</div>
+
+	<section id="status" class="statusBar"> </section>
+	  
+	  </br> Relinquish
+
+	  <script src="javascripts/config.js"></script>
+	  <script src="javascripts/statuses.js"></script>
+	  <script src="javascripts/messages.js"></script>
+	  <script src="javascripts/board.js"></script>
+	  <script src="javascripts/ui-right.js"></script>	  
+	  <script src="javascripts/interactions.js"></script>
+  </body>
+</html>
