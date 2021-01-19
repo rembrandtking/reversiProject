@@ -1,11 +1,11 @@
 let soundWhite = new Audio("../data/c.mp3");
 let soundBlue = new Audio("../data/g.mp3");
 
-function GameState(visibleWordBoard, sb, socket) {
+function GameState(ui, socket) {
     this.playerType = null;
     this.pointsWhite = 0;
     this.pointsBlue = 0;
-    this.statusBar = sb;
+    this.UIManager = ui;
     this.boardManager = new BoardManager();
     this.boardManager.initialize();
     
@@ -17,54 +17,60 @@ function GameState(visibleWordBoard, sb, socket) {
     this.playerType = p;
   };
 
-  this.calculateScore = function () {
-    // go through board and count pieces per player
-    // check if someone won
+  this.updateScore = function () {
+    //Calculate and store
+    pointsWhite = this.boardManager.getPieceCount(1);
+    pointsBlue = this.boardManager.getPieceCount(2);
+
+    //render
+    this.UIManager.setScore(pointsWhite, pointsBlue);
   };
-
-
 
   this.whoWon = function () {
       //check if current this.validMovesArray == null
       //if true; player with most points is winner
       //if false; continue and return null
+      return null;
   };
 
   //update the game, do this BEFORE the new player gets to make a move
   this.updateGame = function (clickedBox, color) {
-
     //the clickedPiece number can be assumed to be a valid move, this should have been checked on other client
     //so we only need to update all required pieces
     //we then get the new score for both players.
-
     //we now make this player move
 
+    //place the piece in the matrix and update UI
     this.boardManager.placePiece(clickedBox, color);
-    if(color == "WHITE"){
+    this.boardManager.changePieces(clickedBox, color);
+
+    //update the score in memory and UI
+    this.updateScore();
+
+    if(color == "WHITE") {
       soundWhite.play();
     }
-    else{
+    else {
       soundBlue.play();
     }
-    //clickSound.play();
 
     //if the current player didnt place this part, no need to resend messages.
-    if(this.playerType != color) return;
-
+    if(this.playerType != color) {
+      //get the valid moves
+      return;
+    }
 
     //disable movement on current player
     canInteract(false);
-
-
     
     if(this.playerType == "WHITE"){
-      sb.setStatus(Status["player1Wait"]);
+      ui.setStatus(Status["player1Wait"]);
       var outgoingMsg = Messages.O_SET_WHITE;
       outgoingMsg.data = clickedBox;
       socket.send(JSON.stringify(outgoingMsg));
     }
     else{
-      sb.setStatus(Status["player2Wait"]);
+      ui.setStatus(Status["player2Wait"]);
       var outgoingMsg = Messages.O_SET_BLUE;
       outgoingMsg.data = clickedBox;
       socket.send(JSON.stringify(outgoingMsg));
@@ -74,12 +80,6 @@ function GameState(visibleWordBoard, sb, socket) {
 
     if (winner != null) {
 
-      /* disable further clicks by cloning each alphabet
-       * letter and not adding an event listener; then
-       * replace the original node through some DOM logic
-       */
-
-
       let alertString;
       if (winner == this.playerType) {
         alertString = Status["gameWon"];
@@ -87,7 +87,7 @@ function GameState(visibleWordBoard, sb, socket) {
         alertString = Status["gameLost"];
       }
       alertString += Status["playAgain"];
-      sb.setStatus(alertString);
+      ui.setStatus(alertString);
       //send message to other player.
       socket.close();
     }
@@ -101,19 +101,12 @@ function GameState(visibleWordBoard, sb, socket) {
       Array.from(elements).forEach(function (el) {
         el.addEventListener("click", function singleClick(e) {          
             var clickedBox = e.target.id;
+            if (clickedBox == "") return;
             if(!gs.boardManager.isValidMove(clickedBox)) {
               //say its not valid
               return;
             }
             gs.updateGame(clickedBox, gs.playerType);
-
-            //if not your turn, print in status bar
-            //if it is, check if valid
-  
-          /*
-           * every letter can only be selected once; handling this within
-           * JS is one option, here simply remove the event listener when a click happened
-           */
           el.removeEventListener("click", singleClick, false);
         });
       });
@@ -129,23 +122,13 @@ function GameState(visibleWordBoard, sb, socket) {
 
   (function setup() {
     var socket = new WebSocket(Setup.WEB_SOCKET_URL);  
-    /*
-     * initialize all UI elements of the game:
-     * - visible word board (i.e. place where the hidden/unhidden word is shown)
-     * - status bar
-     * - alphabet board
-     *
-     * the GameState object coordinates everything
-     */
+    var ui = new UIManager();
   
-    var vw = new VisibleWordBoard();
-    var sb = new StatusBar();
-  
-    //no object, just a function
-  
-    var gs = new GameState(vw, sb, socket);
-    var ab = new BoardSetup(gs);
-    ab.initialize();
+    //no object, just a function  
+    var gs = new GameState(ui, socket);
+
+    var boardSetup = new BoardSetup(gs);
+    boardSetup.initialize();
     canInteract(false);
     //should wait for other player to join to initialize the board buttons.
     
@@ -158,16 +141,18 @@ function GameState(visibleWordBoard, sb, socket) {
       //set player type
       if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
         gs.setPlayerType(incomingMsg.data); //should be "WHITE" or "BLUE"
-        if(incomingMsg.data == "WHITE") sb.setStatus(Status["player1Intro"]);
-        else sb.setStatus(Status["player2Intro"]);
+        if(incomingMsg.data == "WHITE") ui.setStatus(Status["player1Intro"]);
+        else ui.setStatus(Status["player2Intro"]);
         //player one should be able to start as soon as player 2 joins
       }
       
       //if player if white, allow them to move once blue has joined.
       if(incomingMsg.type == Messages.T_BEGIN_GAME){
         if(gs.playerType == "WHITE"){
-          canInteract(true);
-          sb.setStatus(Status["player1Move"]);
+
+          ui.setStatus(Status["player1Move"]);
+          gs.boardManager.determineValidMoves(1);
+          canInteract(true);          
         }
         else{
           socket.send(Messages.S_BEGIN_GAME);                    
@@ -175,24 +160,21 @@ function GameState(visibleWordBoard, sb, socket) {
       }
 
       //if player is blue, and white made a move update board
-      if(incomingMsg.type == Messages.T_SET_WHITE && gs.playerType == "BLUE"){        
-        sb.setStatus(Status["player2Move"]);
-        gs.updateGame(incomingMsg.data, "WHITE");
+      if(incomingMsg.type == Messages.T_SET_WHITE && gs.playerType == "BLUE"){  
 
+        ui.setStatus(Status["player2Move"]);
+        gs.updateGame(incomingMsg.data, "WHITE");
+        gs.boardManager.determineValidMoves(2);
         canInteract(true);
       }
       //if player is white, and blue made a move update board
       if(incomingMsg.type == Messages.T_SET_BLUE && gs.playerType == "WHITE"){
         
-        sb.setStatus(Status["player1Move"]);
+        ui.setStatus(Status["player1Move"]);
         gs.updateGame(incomingMsg.data, "BLUE");
-
+        gs.boardManager.determineValidMoves(1);
         canInteract(true);
       }
-
-
-
-
     };
   
     socket.onopen = function () {
@@ -202,7 +184,7 @@ function GameState(visibleWordBoard, sb, socket) {
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function () {
       if (gs.whoWon() == null) {
-        sb.setStatus(Status["aborted"]);
+        ui.setStatus(Status["aborted"]);
       }
     };
   
