@@ -1,8 +1,8 @@
 //@ts-check
 
 var Status = {
-    gameWon: "Congratulations! You won! ",
-    gameLost: "Game over. You lost! ",
+    gameWon: "Congratulations! You won! <a href='/play'>Play again!</a>",
+    gameLost: "Game over. You lost! <a href='/play'>Play again!</a>",
     playAgain: "&nbsp;<a href='/play'>Play again!</a>",
     player1Intro: "You are the color white, please wait for another player",
     player2Intro: "You are the color blue, please wait for the other player to make their first move",

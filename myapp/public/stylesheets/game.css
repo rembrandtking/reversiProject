@@ -69,17 +69,21 @@ body {
 }
 
 
+
+
 .statusBar {
   margin-top: 50px;
   display: inline-block;
+  padding: 10px;
 
   color: #eeeeee;
   background-color: #686d76;
 
   width: 600px;
-  height: 50px;
+
   border-radius: 1%;
   text-align: center;
 }
+
 
 

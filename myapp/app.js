@@ -69,10 +69,7 @@ wss.on("connection", function connection(ws) {
    * inform the client about its assigned player type
    */
   con.send(playerType == "WHITE" ? messages.S_PLAYER_WHITE : messages.S_PLAYER_BLUE);
-  if(playerType == "BLUE") con.send(messages.S_BEGIN_GAME); 
-
-
-  
+  if(playerType == "BLUE") con.send(messages.S_BEGIN_GAME);  
 
   /*
    * once we have two players, there is no way back;
