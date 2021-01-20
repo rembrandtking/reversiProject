@@ -17,6 +17,18 @@ function BoardManager() {
 
   this.initialize = function() {//base board configuration
     this.board = [
+            0, 2, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,];
+            
+  };
+  //0 = top left, 63 = bottom right
+/*this.board = [
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -26,7 +38,9 @@ function BoardManager() {
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0];
             
-  };//0 = top left, 63 = bottom right
+  };
+  */
+
 
   this.textToColor = function(color){
     if(color == "WHITE") return 1;

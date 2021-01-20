@@ -7,6 +7,7 @@
       type: exports.T_GAME_WON_BY,
       data: null
     };
+    
   
     /*
      * Server to client: abort game (e.g. if second player exited the game)

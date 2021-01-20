@@ -17,6 +17,41 @@ function GameState(ui, socket) {
     this.playerType = p;
   };
 
+  this.whoWon = function () {
+    console.log(this.boardManager.validMoves.length);
+    if(this.boardManager.validMoves.length > 0)
+      return null;
+
+    console.log(parseInt(this.pointsWhite) + 1);
+    if(+this.pointsBlue > +this.pointsWhite){
+      return "BLUE";
+    }
+    if(+this.pointsBlue < +this.pointsWhite){
+      return "WHITE";
+    }
+  };
+
+  this.endGame = function (winner) {
+    console.log(winner);
+    if (winner == null)
+    return;
+  
+    if (winner == this.playerType) {
+      ui.setStatus(Status["gameWon"]);
+      var outgoingMsg = Messages.O_GAME_WON_BY;
+      outgoingMsg.data = winner;
+      socket.send(JSON.stringify(outgoingMsg));
+  } else {
+    ui.setStatus(Status["gameLost"]);
+      var outgoingMsg = Messages.O_GAME_WON_BY;
+      outgoingMsg.data = winner;
+      socket.send(JSON.stringify(outgoingMsg));
+  }
+  
+  //send message to other player.
+  socket.close();
+  };
+
   this.updateScore = function () {
     //Calculate and store
     pointsWhite = this.boardManager.getPieceCount(1);
@@ -26,12 +61,7 @@ function GameState(ui, socket) {
     this.UIManager.setScore(pointsWhite, pointsBlue);
   };
 
-  this.whoWon = function () {
-      //check if current this.validMovesArray == null
-      //if true; player with most points is winner
-      //if false; continue and return null
-      return null;
-  };
+    
 
   //update the game, do this BEFORE the new player gets to make a move
   this.updateGame = function (clickedBox, color) {
@@ -48,10 +78,10 @@ function GameState(ui, socket) {
     this.updateScore();
 
     if(color == "WHITE") {
-      soundWhite.play();
+      //soundWhite.play();
     }
     else {
-      soundBlue.play();
+      //soundBlue.play();
     }
 
     //if the current player didnt place this part, no need to resend messages.
@@ -76,21 +106,7 @@ function GameState(ui, socket) {
       socket.send(JSON.stringify(outgoingMsg));
     }
 
-    let winner = this.whoWon();
-
-    if (winner != null) {
-
-      let alertString;
-      if (winner == this.playerType) {
-        alertString = Status["gameWon"];
-      } else {
-        alertString = Status["gameLost"];
-      }
-      alertString += Status["playAgain"];
-      ui.setStatus(alertString);
-      //send message to other player.
-      socket.close();
-    }
+    
   };
 }
 
@@ -159,13 +175,44 @@ function GameState(ui, socket) {
         }
       }
 
+      if(incomingMsg.type == Messages.O_GAME_WON_BY && gs.playerType == "BLUE"){ 
+        console.log(incomingMsg.type)
+        if(gs.PlayerType == incomingMsg.data){
+          ui.setStatus(Status["gameWon"]);
+          canInteract(false);
+        }
+        else{
+          ui.setStatus(Status["gameLost"]);
+          canInteract(false);
+        }
+      } 
+
+      if(incomingMsg.type == Messages.O_GAME_WON_BY && gs.playerType == "WHITE"){ 
+        console.log(incomingMsg.type)
+        if(gs.PlayerType == incomingMsg.data){
+          ui.setStatus(Status["gameWon"]);
+          canInteract(false);
+        }
+        else{
+          ui.setStatus(Status["gameLost"]);
+          canInteract(false);
+        }
+      } 
       //if player is blue, and white made a move update board
       if(incomingMsg.type == Messages.T_SET_WHITE && gs.playerType == "BLUE"){  
-
         ui.setStatus(Status["player2Move"]);
         gs.updateGame(incomingMsg.data, "WHITE");
         gs.boardManager.determineValidMoves(2);
-        canInteract(true);
+        let winner = gs.whoWon();
+        console.log(winner);
+        if(winner == null){
+          canInteract(true);
+        }
+        else{
+          canInteract(false);
+          gs.endGame(winner);
+        }
+        
       }
       //if player is white, and blue made a move update board
       if(incomingMsg.type == Messages.T_SET_BLUE && gs.playerType == "WHITE"){
@@ -173,9 +220,19 @@ function GameState(ui, socket) {
         ui.setStatus(Status["player1Move"]);
         gs.updateGame(incomingMsg.data, "BLUE");
         gs.boardManager.determineValidMoves(1);
-        canInteract(true);
+        let winner = gs.whoWon();
+        console.log(winner);
+        if(winner == null){
+          canInteract(true);
+        }
+        else{
+          canInteract(false);
+          gs.endGame(winner)
+        }
       }
     };
+
+   
   
     socket.onopen = function () {
       socket.send("{}");

@@ -104,8 +104,8 @@ wss.on("connection", function connection(ws) {
       }
 
       if (oMsg.type == messages.T_GAME_WON_BY) {
-        gameObj.setStatus(oMsg.data);
-        //game was won by somebody, update statistics
+        gameObj.playerBLUE.send(message);
+        gameObj.setStatus("GAME COMPLETED")
         gameStatus.gamesCompleted++;
       }
     } 
@@ -116,7 +116,8 @@ wss.on("connection", function connection(ws) {
       }
 
       if (oMsg.type == messages.T_GAME_WON_BY) {
-        gameObj.setStatus(oMsg.data);
+        gameObj.playerWHITE.send(message);
+        gameObj.setStatus("GAME COMPLETED")
         //game was won by somebody, update statistics
         gameStatus.gamesCompleted++;
       }
