@@ -157,8 +157,9 @@ function BoardManager() {
     return x + 8 * y;
   };
   this.leftOrRight = function(dir){
-    if(dir == 1 || -7 || 9) return 1;
-    if(dir == -1 || -9 || 7) return -1;
+    if(dir == 1 || dir == -7 || dir == 9) return 1;
+    if(dir == -1 || dir == -9 || dir == 7) return -1;
+    return 0;
   }
 
   //change neighbouring pieces
