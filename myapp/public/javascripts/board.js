@@ -127,10 +127,16 @@ function BoardManager() {
         let position = coordinate; // already move once in the direction. the while loop assumes the current spot is the opposite color.
         let count = 0; //keep track of the enemy colors we have seen
         do{
+          if(x > 0 && position % 8 == 7) //if going to the right, but this slot is the first in a row, break.
+            break;
+          if(x < 0 && position % 8 == 0) //if going to the left, but this slot is the last in a row, break.
+            break;
           position += this.getDirection(x, y);
+
                     
           if(position > 63 || position < 0 || this.board[position] == 0) //if we find a gap, or exceed the board limitation break out of loop.
             break;
+
           if(this.board[position] != color) 
             count++;
           else if(count > 0){ //we found a spot with the same color as given argument, thus valid direction
@@ -150,6 +156,10 @@ function BoardManager() {
   this.getDirection = function(x, y){
     return x + 8 * y;
   };
+  this.leftOrRight = function(dir){
+    if(dir == 1 || -7 || 9) return 1;
+    if(dir == -1 || -9 || 7) return -1;
+  }
 
   //change neighbouring pieces
   //color should be int 1 or 2, coordinate should be a single integer for array based board
@@ -166,12 +176,16 @@ function BoardManager() {
       while(this.board[position] != color && this.board[position] != 0){
         let delay = pieceAmount * 50;
         this.placePiece(position, color, delay);
-        
+
         setTimeout(this.AnimatePiece, delay, position, color, this);
 
         position += validDirs[i];
         pieceAmount++;
         if(position > 63 || position < 0) break;
+        if(this.leftOrRight(validDirs[i]) > 0 && position % 8 == 7) //if going to the right, but this slot is the first in a row, break.
+          break;
+        if(this.leftOrRight(validDirs[i]) < 0 && position % 8 == 0) //if going to the left, but this slot is the last in a row, break.
+          break;
       }
     }    
   };

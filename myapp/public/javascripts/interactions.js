@@ -37,24 +37,20 @@ function GameState(ui, socket) {
     if(wp > bp){
       return "WHITE";
     }
+    return "TIE";
+    
   };
 
   this.endGame = function (winner) {
     console.log(winner);
     if (winner == null)
     return;
-  
-    if (winner == this.playerType) {
-      
-      var outgoingMsg = Messages.O_GAME_WON_BY;
-      outgoingMsg.data = winner;
-      socket.send(JSON.stringify(outgoingMsg));
-    }
-    else {      
-      var outgoingMsg = Messages.O_GAME_WON_BY;
-      outgoingMsg.data = winner;
-      socket.send(JSON.stringify(outgoingMsg));
-    }
+
+    //send message to other player
+    var outgoingMsg = Messages.O_GAME_WON_BY;
+    outgoingMsg.data = winner;
+    socket.send(JSON.stringify(outgoingMsg));
+
     this.announceEndGame(winner);    
   };
 
@@ -62,10 +58,12 @@ function GameState(ui, socket) {
     if (winner == this.playerType) {
       ui.setStatus(Status["gameWon"]);
     } 
-    else{
+    else if(winner != "TIE"){
       ui.setStatus(Status["gameLost"]);
+    } 
+    else {
+      ui.setStatus(Status["gameTied"]);
     }
-
     //can close socket
     socket.close();
   }
@@ -160,8 +158,8 @@ function GameState(ui, socket) {
     }
 
 
-
-    var socket = new WebSocket(Setup.WEB_SOCKET_URL);  
+    var host = location.origin.replace(/^http/, 'ws');
+    var socket = new WebSocket(host);  
     var ui = new UIManager();
   
     //no object, just a function  
@@ -218,7 +216,6 @@ function GameState(ui, socket) {
         gs.boardManager.determineValidMoves(2);
 
         let winner = gs.whoWon(null);
-        console.log(winner);
         if(winner == null){
           boardSetup.canInteract(true);
         }
@@ -236,7 +233,6 @@ function GameState(ui, socket) {
         gs.boardManager.determineValidMoves(1);
 
         let winner = gs.whoWon(null);
-        console.log(winner);
         if(winner == null){
           boardSetup.canInteract(true);
         }

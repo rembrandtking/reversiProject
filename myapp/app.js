@@ -8,7 +8,7 @@ var messages = require("./public/javascripts/messages");
 var gameStatus = require("./statTracker");
 var Game = require("./game");
 
-var port = process.argv[2];
+var port = process.env.PORT || 3000;//process.argv[2];
 var app = express();
 
 app.set("view engine", "ejs");
@@ -21,7 +21,6 @@ const wss = new websocket.Server({ server });
 
 
 var websockets = {}; //property: websocket, value: game
-
 
 app.get("/", (req, res) => {
   res.render("splash.ejs", {
@@ -121,7 +120,6 @@ wss.on("connection", function connection(ws) {
 
       if (oMsg.type == messages.T_GAME_WON_BY) {
         gameObj.playerWHITE.send(message);
-
         gameObj.setStatus(oMsg.data);
         gameStatus.gamesCompleted++;
       }

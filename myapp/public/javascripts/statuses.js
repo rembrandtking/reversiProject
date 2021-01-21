@@ -3,6 +3,7 @@
 var Status = {
     gameWon: "Congratulations! You won! <a href='/play'>Play again!</a>",
     gameLost: "Game over. You lost! <a href='/play'>Play again!</a>",
+    gameTied: "Tied! <a href='/play'>Play again!</a>",
     playAgain: "&nbsp;<a href='/play'>Play again!</a>",
     player1Intro: "You are <span class='white'>Player White</span>, please wait for <span class='blue'>Player Blue</span>",
     player2Intro: "You are <span class='blue'>Player Blue</span>, please wait for <span class='white'>Player White</span> to make their first move",
