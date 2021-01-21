@@ -1,8 +1,84 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    text-align: center;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    color: #eeeeee;
+    background-color: #373a40;
+  }
+  
+  @media(min-width: 1280px){
+    .title{
+        font-size: 50px;
+    }
+    body {
+        font-size: 10px;
+
+      }
+  
+  }
+  @media(min-width: 1920px){
+    .title{
+        font-size: 75px;
+    }
+    body {
+        font-size: 12px;
+      }
+  }
+  @media(min-width: 2560px){
+      .title{
+          font-size: 100px;
+      }
+      body {
+        font-size: 14px;
+
+      }
+  }
+
+  .darkBackgroundLeft, .darkBackgroundRight{
+      position: absolute;
+      width: 10%;
+      background: #25272b;
+      height: 100%;
+      top:0px;
+      bottom: 0px;
+  }
+  .darkBackgroundRight{
+      right: 0px;
+  }
+
+  .darkBackgroundLeft{
+    left: 0px;
 }
 
-a {
-  color: #00B7FF;
-}
+
+  .statusBar, .textBox, .playButton {
+    margin-top: 50px;
+    display: inline-block;
+    padding: 10px;
+    font-weight: bold;  
+  
+    color: #373a40;
+    background-color: #686d76;
+  
+    width: 600px;
+  
+    border-radius: 1%;
+    text-align: center;
+  }
+
+  
+  .grid-box {
+    background-color: #373a40;
+    text-align: center;
+  }
+  
+  .grid-item, .grid-item-BLUE, .grid-item-WHITE, .grid-item-valid {
+    margin-top: 5%;
+    display: inline-block;
+    background-color: #373a40;
+    animation-duration: .3s;
+    height: 90%;
+    width: 90%;
+    border-radius: 50%;
+   
+  }
+

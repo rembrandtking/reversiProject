@@ -1,53 +1,69 @@
-body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    color: #eeeeee;
-    background-color: #373a40;
+@import "style.css";
+
+.menuBoard{
+    height: 300px;
+    width: 300px;
+  
+    margin: auto;
+    display: grid;
+  
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1f;
+    grid-gap: 5px;
+    background-color: #686d76;
   }
   
-  a {
-    color: #00B7FF;
+  .grid-item {
+    background-color: #19d3da;
+    animation-name: MenuAnimation;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
   }
 
-  .grid-container {
-    display: grid;
-    grid-template-rows:  10px 100px;
-    grid-template-columns: repeat(3, 400px);
-    grid-row-gap: 10px;
-    grid-column-gap: 10px;
-    
-    }
-    button {
-        font: 50px "Lucida Grande", Helvetica, Arial, sans-serif;
-        border: 2px solid lightgray;
-        background-color: #686d76;
-        width: 350px;
-        height: 140px;
-    }
-    .button-container {
-    display: grid;
-    grid-template-rows:  100px 100px;
-    grid-template-columns: 300px 300px;
-    grid-row-gap: 10px;
-    grid-column-gap: 250px;
-    
-    }
 
-    .center-box {
-        background-color: #373a40;
-      }
 
-    header  {
-        font-size: 100px;
-        position: relative;
-        left: 85px;
-        
-    }
+  @keyframes MenuAnimation {
+    0%   {background-color:#19d3da; width: 90%}
+    1.5%  {background-color:#19d3da; width: 0%}
+    1.51%  {background-color:#eeeeee;}
+    3% { background-color:#eeeeee; width: 90%}
 
-    .number {
-        font-size: 40px;
-        color: #19d3da;
-        text-align: center;
-        position: relative;
-        right: 50px;
-    }
+
+    50%   {background-color:#eeeeee; width: 90%}
+    51.5%  {background-color:#eeeeee; width: 0%}
+    51.51%  {background-color:#19d3da;}
+    53% { background-color:#19d3da; width: 90%}
+    100% {background-color: #19d3da}
+  }
+
+  .playButton{
+    font-size: 50px;
+    color:#eeeeee;
+    outline-color: #686d76;
+  }
+
+  .playButton:hover{
+    background-color: #19d3da;
+
+    transition-duration: .2s;
+  }
+  .playButton:active{
+    color:#373a40;
+  }
+
+  .textBox{
+    color: #eeeeee;
+  }
+
+  .textBoxTitle{
+      font-size: 20px;
+  }
+
+  .statistic {
+    font-weight: bold;
+  }
+
+  .statistic::after, .statistic::before{
+      content: " - ";
+  }
+

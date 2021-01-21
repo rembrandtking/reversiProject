@@ -16,29 +16,35 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/play", indexRouter);
 
-
-app.get("/", (req, res) => {
-  res.render("splash.ejs", {
-    gamesInitialized: gameStatus.gamesInitialized,
-    gamesCompleted: gameStatus.gamesCompleted
-  });
-});
-
 var server = http.createServer(app);
 const wss = new websocket.Server({ server });
 
 
 var websockets = {}; //property: websocket, value: game
 
-/*
- * regularly clean up the websockets object
- */
+
+app.get("/", (req, res) => {
+  res.render("splash.ejs", {
+    openGames: isOnePlayerInGame(),
+    gamesInitialized: gameStatus.gamesInitialized,
+    gamesCompleted: gameStatus.gamesCompleted,
+    gamesAborted: gameStatus.gamesAborted
+  });
+});
+
+function isOnePlayerInGame(){  
+  if(currentGame == undefined) return 0;
+  if(currentGame.hasOnePlayerConnected()) return 1;
+  return 0;
+}
+
+
 setInterval(function() {
   for (let i in websockets) {
     if (Object.prototype.hasOwnProperty.call(websockets,i)) {
       let gameObj = websockets[i];
-      //if the gameObj has a final status, the game is complete/aborted
-      if (gameObj.finalStatus != null) {
+      if (gameObj.isFinished()) {
+        console.log("Deleting websocket ID: " + i);
         delete websockets[i];
       }
     }

@@ -1,17 +1,4 @@
-body {
-  text-align: center;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  color: #eeeeee;
-  background-color: #373a40;
-}
-
-.title{
- font-size: 100px;
-}
-
-.score{
-  font-size: 75px;
-}
+@import "style.css";
 
 .blue {
   color: #19d3da;
@@ -23,9 +10,6 @@ body {
 
 
 .board{
-  height: 750px;
-  width: 750px;
-
   margin: auto;
   display: grid;
 
@@ -34,21 +18,34 @@ body {
   grid-gap: 5px;
   background-color: #686d76;
 }
+@media(min-width: 1280px){
+  .board{
+    height: 375px;
+    width: 375px
+  }
+  .score{
+    font-size: 37.5px;
+  }
 
-.grid-box {
-  background-color: #373a40;
-  text-align: center;
 }
+@media(min-width: 1920px){
+  .board{
+    height: 562px;
+    width: 562px
+  }
 
-.grid-item, .grid-item-BLUE, .grid-item-WHITE, .grid-item-valid {
-  margin-top: 5%;
-  display: inline-block;
-  background-color: #373a40;
-  animation-duration: .3s;
-  height: 90%;
-  width: 90%;
-  border-radius: 50%;
- 
+  .score{
+    font-size: 56px;
+  }
+}
+@media(min-width: 2560px){
+  .board{
+    height: 750px;
+    width: 750px
+  }
+  .score{
+    font-size: 75px;
+  }
 }
 
 .grid-item-WHITE, .grid-item-BLUE, .grid-item-valid {
@@ -72,6 +69,10 @@ body {
   transition: 0.2s;
 }
 
+.grid-item-valid:active{
+  opacity: 75%;
+  transition: 0.1s;
+}
 @keyframes BlueToWhite {
   0%   {background-color:#19d3da; width: 90%}
   50%  {background-color:#19d3da; width: 0%}
@@ -86,20 +87,8 @@ body {
   100% { background-color:#19d3da; width: 90%}
 }
 
-.statusBar {
-  margin-top: 50px;
-  display: inline-block;
-  padding: 10px;
-  font-weight: bold;  
-
-  color: #373a40;
-  background-color: #686d76;
-
-  width: 600px;
-
-  border-radius: 1%;
-  text-align: center;
+.timer::after, .timer::before{
+  content: " | ";
 }
-
 
 

@@ -153,6 +153,14 @@ function GameState(ui, socket) {
   }
 
   (function setup() {
+    const mediaQuery = window.matchMedia('(min-width: 1280px)');
+    if(!mediaQuery.matches){
+      alert("Your screen is too small unfortunately, please use a different device");
+      return;
+    }
+
+
+
     var socket = new WebSocket(Setup.WEB_SOCKET_URL);  
     var ui = new UIManager();
   
@@ -174,15 +182,21 @@ function GameState(ui, socket) {
       //set player type
       if (incomingMsg.type == Messages.T_PLAYER_TYPE) {
         gs.setPlayerType(incomingMsg.data); //should be "WHITE" or "BLUE"
-        if(incomingMsg.data == "WHITE") ui.setStatus(Status["player1Intro"]);
-        else ui.setStatus(Status["player2Intro"]);
+        if(incomingMsg.data == "WHITE") {
+          ui.tempTimer();
+          ui.setStatus(Status["player1Intro"]);
+        }
+        else {
+          ui.setStatus(Status["player2Intro"]);
+          ui.startTimer();
+        } 
         //player one should be able to start as soon as player 2 joins
       }
       
       //if player if white, allow them to move once blue has joined.
       if(incomingMsg.type == Messages.T_BEGIN_GAME){
         if(gs.playerType == "WHITE"){
-
+          ui.startTimer();
           ui.setStatus(Status["player1Move"]);
           gs.boardManager.determineValidMoves(1);
           boardSetup.canInteract(true);          

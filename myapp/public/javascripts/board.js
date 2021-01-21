@@ -166,7 +166,9 @@ function BoardManager() {
       while(this.board[position] != color && this.board[position] != 0){
         let delay = pieceAmount * 50;
         this.placePiece(position, color, delay);
+        
         setTimeout(this.AnimatePiece, delay, position, color, this);
+
         position += validDirs[i];
         pieceAmount++;
         if(position > 63 || position < 0) break;

@@ -2,32 +2,73 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Reversi</title>
-    <link rel="stylesheet" href="../public/stylesheets/splash.css" />
+    <title class="title">Reversi</title>
+    <link rel="stylesheet" href="stylesheets/splash.css" />
+    <link rel="icon" type="image/ico" href="data/favicon.ico">
 </head>
 <body>
-    <header>
-        <h1>Reversi</h1>
-    </header>
-        <form action="/play" method="get">
-            <button type="submit">Play</button>
-        </form>    
-        <button type="How to play">How to play</button>
+
+    <div class ="title">Reversi</div>
+
+    <div class = "menuBoard">
+            <div class="grid-box"><div class="grid-item" style="animation-delay: 1s;"></div></div>
+            <div class="grid-box"><div class="grid-item" style="animation-delay: .5s;"></div></div>
+            <div class="grid-box"><div class="grid-item" style="animation-delay: 2.5s;"></div></div>
+            <div class="grid-box"><div class="grid-item" style="animation-delay: 4.5s;"></div></div>
+    </div>
+
+    <form action="/play" method="get">
+        <button class = "playButton" type="submit">Play</button>
+    </form>
+
     <main>
-           <article>
-            <h1>Stats: </h1>
-                <hr>
-            <h2>Current Games: </h2>
-            <h2><strong>4</strong></h2>  <hr>  
-            <h2>Completed Games: </h2>
-            <h2><strong>12</strong></h2> <hr>
-            <h2>Points: </h2>
-            <h2><strong>21</strong></h2>
-                <hr>
-            </article>
+        </br></br>
+        <p class="statistic">
+            <%if (openGames > 0) { %>
+                There is at least one player waiting for an opponent!
+            <% } else { %>
+                No players queued up, you could be the first!
+            <% } %>
+            </p>
+            <p class="statistic">
+            <%= gamesInitialized %> 
+            <%if (gamesInitialized != 1) { %>
+                games
+            <% } else { %>
+                game
+            <% } %>
+            initlialized, 
+            <%= gamesCompleted %>
+            games completed & 
+            <%= gamesAborted %>
+            games aborted
+        </p>
+
+        <span class ="textBox">
+            <p class="textBoxTitle">Welcome to Reversi!</p>
+
+            In this game you play on an eight by eight board.</br>
+            Two players take turns placing one piece at a time.</br>
+            In each turn you have to place your piece such that,</br>
+            together with one of your existing pieces, it flanks</br>
+            one or a row of your opponent's pieces.</br></br>
+
+            Should you do this correctly, you will capture that piece or row!</br>
+            If you play well, you can even catpure multiple different rows in one turn!</br></br>
+
+            The game ends when the current player can't move, and the player with the most pieces wins.</br>
+            To help you, all current valid moves are highlighted.</br>
+
+            Good luck, and have fun!</br></br>
+
+            Created by Joris And Rembrandt
+        
+        </span>
+
+
     </main>
-    <footer>
-        <p>©Copyright 2021 by Joris And Rembrandt. All rights reversed.</p>
-    </footer>
+
+    <div class="darkBackgroundRight"></div>
+    <div class="darkBackgroundLeft"></div>
 </body>
 </html>

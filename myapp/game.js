@@ -130,6 +130,13 @@ var game = function(gameID) {
   game.prototype.hasOnePlayerConnected = function() {
     return this.gameState == "1 JOINT";
   };
+
+  
+  game.prototype.isFinished = function() {
+    return this.gameState == "WHITE" ||
+            this.gameState == "BLUE" ||
+            this.gameState == "ABORTED";
+  };
   
   
   game.prototype.addPlayer = function(p) {
