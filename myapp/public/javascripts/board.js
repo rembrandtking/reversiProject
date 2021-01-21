@@ -17,6 +17,19 @@ function BoardManager() {
 
   this.initialize = function() {//base board configuration
     this.board = [
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 1, 2, 0, 0, 0,
+      0, 0, 0, 2, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0];            
+  };
+  //0 = top left, 63 = bottom right
+
+/*    board for checking winning
+          this.board = [
             0, 2, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,
@@ -26,19 +39,6 @@ function BoardManager() {
             1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,];
             
-  };
-  //0 = top left, 63 = bottom right
-/*this.board = [
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 1, 2, 0, 0, 0,
-            0, 0, 0, 2, 1, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0];
-            
-  };
   */
 
 
@@ -51,23 +51,32 @@ function BoardManager() {
     if(color == 1) return "WHITE";
     else if(color == 2) return "BLUE";
     else return color; //if neither, it might already be 1 or 2!
-  }
+  };
 
-  this.placePiece = function(position, color) {
+  this.placePiece = function(position, color, delay) {
     //console.log(position + " " + color); //logs where piece was placed and which color.
     //if(this.board[position] != 0) return; //return if not empty
     //clear valid moves if there are any
     if(this.validMoves != undefined && this.validMoves.length > 0){
-      for(let i = 0; i < this.validMoves.length; i++){
-        document.getElementById(this.validMoves[i]).className =  "grid-item";
-      }
-      this.resetValidMoves();
+      this.clearMoves();
     }
 
     this.board[position] = this.textToColor(color);
-    document.getElementById(position).className =  "grid-item-" + this.colorToText(color);
+    setTimeout(this.updateVisualColor, delay, position, this.colorToText(color))
+    
       //switch off the UI element by adding the 'disabled' class name (defined in game.css)    
   };
+
+  this.updateVisualColor = function(position, color){
+    document.getElementById(position).className =  "grid-item-" + color;
+  }
+
+  this.clearMoves = function(){
+    for(let i = 0; i < this.validMoves.length; i++){
+      document.getElementById(this.validMoves[i]).className =  "grid-item";
+    }
+    this.resetValidMoves();
+  }
 
   //get count in board that match the id //1 for white, 2 for blue, 0 for unfilled
   this.getPieceCount = function(id){
@@ -91,7 +100,6 @@ function BoardManager() {
   //color should be int 1 or 2
   this.determineValidMoves = function(color){
     color = this.textToColor(color);
-    console.log(color);
 
     this.resetValidMoves();
     for(let i = 0; i < this.board.length; i++){
@@ -146,6 +154,7 @@ function BoardManager() {
   //change neighbouring pieces
   //color should be int 1 or 2, coordinate should be a single integer for array based board
   this.changePieces = function(coordinate, color) {
+    let pieceAmount = 0;
     coordinate = +coordinate; //make sure coordinate is a number
     
     color = this.textToColor(color);
@@ -155,11 +164,18 @@ function BoardManager() {
       position = coordinate + validDirs[i];
 
       while(this.board[position] != color && this.board[position] != 0){
-        this.placePiece(position, color);
+        let delay = pieceAmount * 50;
+        this.placePiece(position, color, delay);
+        setTimeout(this.AnimatePiece, delay, position, color, this);
         position += validDirs[i];
+        pieceAmount++;
         if(position > 63 || position < 0) break;
-        console.log(position);
       }
     }    
   };
+
+  this.AnimatePiece = function(position, color, obj){//set css animation tag
+    let el = document.getElementById(position);
+    el.style.animationName = color == 2 ? "WhiteToBlue" : "BlueToWhite";//get other animation    
+  }
 }

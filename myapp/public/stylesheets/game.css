@@ -17,6 +17,10 @@ body {
   color: #19d3da;
 }
 
+.white {
+  color: #eeeeee;
+}
+
 
 .board{
   height: 750px;
@@ -39,8 +43,8 @@ body {
 .grid-item, .grid-item-BLUE, .grid-item-WHITE, .grid-item-valid {
   margin-top: 5%;
   display: inline-block;
-
   background-color: #373a40;
+  animation-duration: .3s;
   height: 90%;
   width: 90%;
   border-radius: 50%;
@@ -65,21 +69,37 @@ body {
 
 .grid-item-valid:hover{
   opacity: 50%;
-  transition: 0.05s;
+  transition: 0.2s;
 }
 
+@keyframes BlueToWhite {
+  0%   {background-color:#19d3da; width: 90%}
+  50%  {background-color:#19d3da; width: 0%}
+  51%  {background-color:#eeeeee;}
+  100% { background-color:#eeeeee; width: 90%}
+}
+
+@keyframes WhiteToBlue {
+  0%   {background-color:#eeeeee; width: 90%}
+  50%  {background-color:#eeeeee; width: 0%}
+  51%  {background-color:#19d3da;}
+  100% { background-color:#19d3da; width: 90%}
+}
 
 .statusBar {
   margin-top: 50px;
   display: inline-block;
+  padding: 10px;
+  font-weight: bold;  
 
-  color: #eeeeee;
+  color: #373a40;
   background-color: #686d76;
 
   width: 600px;
-  height: 50px;
+
   border-radius: 1%;
   text-align: center;
 }
+
 
 

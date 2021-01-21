@@ -7,6 +7,7 @@ function GameState(ui, socket) {
     this.pointsBlue = 0;
     this.UIManager = ui;
     this.boardManager = new BoardManager();
+    this.boardSetup = null;
     this.boardManager.initialize();
     
   this.getPlayerType = function () {
@@ -17,16 +18,23 @@ function GameState(ui, socket) {
     this.playerType = p;
   };
 
-  this.whoWon = function () {
-    console.log(this.boardManager.validMoves.length);
+  this.setBoardSetup = function(boardSetup) {
+    this.boardSetup = boardSetup;
+
+  }
+
+  this.whoWon = function (playerToRecalculate) {
+    if(playerToRecalculate != null)
+      this.boardManager.determineValidMoves(playerToRecalculate);
     if(this.boardManager.validMoves.length > 0)
       return null;
 
-    console.log(parseInt(this.pointsWhite) + 1);
-    if(+this.pointsBlue > +this.pointsWhite){
+    let wp = parseInt(this.pointsWhite);
+    let bp = parseInt(this.pointsBlue);
+    if(wp < bp){
       return "BLUE";
     }
-    if(+this.pointsBlue < +this.pointsWhite){
+    if(wp > bp){
       return "WHITE";
     }
   };
@@ -37,28 +45,38 @@ function GameState(ui, socket) {
     return;
   
     if (winner == this.playerType) {
-      ui.setStatus(Status["gameWon"]);
+      
       var outgoingMsg = Messages.O_GAME_WON_BY;
       outgoingMsg.data = winner;
       socket.send(JSON.stringify(outgoingMsg));
-  } else {
-    ui.setStatus(Status["gameLost"]);
+    }
+    else {      
       var outgoingMsg = Messages.O_GAME_WON_BY;
       outgoingMsg.data = winner;
       socket.send(JSON.stringify(outgoingMsg));
-  }
-  
-  //send message to other player.
-  socket.close();
+    }
+    this.announceEndGame(winner);    
   };
+
+  this.announceEndGame = function(winner){
+    if (winner == this.playerType) {
+      ui.setStatus(Status["gameWon"]);
+    } 
+    else{
+      ui.setStatus(Status["gameLost"]);
+    }
+
+    //can close socket
+    socket.close();
+  }
 
   this.updateScore = function () {
     //Calculate and store
-    pointsWhite = this.boardManager.getPieceCount(1);
-    pointsBlue = this.boardManager.getPieceCount(2);
+    this.pointsWhite = this.boardManager.getPieceCount(1);
+    this.pointsBlue = this.boardManager.getPieceCount(2);
 
     //render
-    this.UIManager.setScore(pointsWhite, pointsBlue);
+    this.UIManager.setScore(this.pointsWhite, this.pointsBlue);
   };
 
     
@@ -71,17 +89,17 @@ function GameState(ui, socket) {
     //we now make this player move
 
     //place the piece in the matrix and update UI
-    this.boardManager.placePiece(clickedBox, color);
+    this.boardManager.placePiece(clickedBox, color, 0);
     this.boardManager.changePieces(clickedBox, color);
 
     //update the score in memory and UI
     this.updateScore();
 
     if(color == "WHITE") {
-      //soundWhite.play();
+      soundWhite.play();
     }
     else {
-      //soundBlue.play();
+      soundBlue.play();
     }
 
     //if the current player didnt place this part, no need to resend messages.
@@ -91,7 +109,7 @@ function GameState(ui, socket) {
     }
 
     //disable movement on current player
-    canInteract(false);
+    this.boardSetup.canInteract(false);
     
     if(this.playerType == "WHITE"){
       ui.setStatus(Status["player1Wait"]);
@@ -104,9 +122,7 @@ function GameState(ui, socket) {
       var outgoingMsg = Messages.O_SET_BLUE;
       outgoingMsg.data = clickedBox;
       socket.send(JSON.stringify(outgoingMsg));
-    }
-
-    
+    }    
   };
 }
 
@@ -119,7 +135,7 @@ function GameState(ui, socket) {
             var clickedBox = e.target.id;
             if (clickedBox == "") return;
             if(!gs.boardManager.isValidMove(clickedBox)) {
-              //say its not valid
+              gs.UIManager.setStatus(Status["invalidMove"]);
               return;
             }
             gs.updateGame(clickedBox, gs.playerType);
@@ -127,13 +143,13 @@ function GameState(ui, socket) {
         });
       });
     };
-  }
 
-  function canInteract(boolean){
+  this.canInteract = function(boolean){
     let elements = document.querySelectorAll(".grid-box");
     Array.from(elements).forEach(function (el) {
       el.style.pointerEvents = (boolean ? "auto" : "none");
     });
+  }
   }
 
   (function setup() {
@@ -145,7 +161,8 @@ function GameState(ui, socket) {
 
     var boardSetup = new BoardSetup(gs);
     boardSetup.initialize();
-    canInteract(false);
+    boardSetup.canInteract(false);
+    gs.setBoardSetup(boardSetup);
     //should wait for other player to join to initialize the board buttons.
     
   
@@ -168,48 +185,31 @@ function GameState(ui, socket) {
 
           ui.setStatus(Status["player1Move"]);
           gs.boardManager.determineValidMoves(1);
-          canInteract(true);          
+          boardSetup.canInteract(true);          
         }
         else{
           socket.send(Messages.S_BEGIN_GAME);                    
         }
       }
 
-      if(incomingMsg.type == Messages.O_GAME_WON_BY && gs.playerType == "BLUE"){ 
-        console.log(incomingMsg.type)
-        if(gs.PlayerType == incomingMsg.data){
-          ui.setStatus(Status["gameWon"]);
-          canInteract(false);
-        }
-        else{
-          ui.setStatus(Status["gameLost"]);
-          canInteract(false);
-        }
-      } 
-
-      if(incomingMsg.type == Messages.O_GAME_WON_BY && gs.playerType == "WHITE"){ 
-        console.log(incomingMsg.type)
-        if(gs.PlayerType == incomingMsg.data){
-          ui.setStatus(Status["gameWon"]);
-          canInteract(false);
-        }
-        else{
-          ui.setStatus(Status["gameLost"]);
-          canInteract(false);
-        }
+      //update UI and disconnect after getting Game Won Message
+      if(incomingMsg.type == Messages.T_GAME_WON_BY){
+        gs.announceEndGame(incomingMsg.data);
+        boardSetup.canInteract(false);
       } 
       //if player is blue, and white made a move update board
       if(incomingMsg.type == Messages.T_SET_WHITE && gs.playerType == "BLUE"){  
         ui.setStatus(Status["player2Move"]);
         gs.updateGame(incomingMsg.data, "WHITE");
         gs.boardManager.determineValidMoves(2);
-        let winner = gs.whoWon();
+
+        let winner = gs.whoWon(null);
         console.log(winner);
         if(winner == null){
-          canInteract(true);
+          boardSetup.canInteract(true);
         }
         else{
-          canInteract(false);
+          boardSetup.canInteract(false);
           gs.endGame(winner);
         }
         
@@ -220,13 +220,14 @@ function GameState(ui, socket) {
         ui.setStatus(Status["player1Move"]);
         gs.updateGame(incomingMsg.data, "BLUE");
         gs.boardManager.determineValidMoves(1);
-        let winner = gs.whoWon();
+
+        let winner = gs.whoWon(null);
         console.log(winner);
         if(winner == null){
-          canInteract(true);
+          boardSetup.canInteract(true);
         }
         else{
-          canInteract(false);
+          boardSetup.canInteract(false);
           gs.endGame(winner)
         }
       }
@@ -240,10 +241,13 @@ function GameState(ui, socket) {
   
     //server sends a close event only if the game was aborted from some side
     socket.onclose = function () {
-      if (gs.whoWon() == null) {
+      if (gs.whoWon(gs.playerType == "WHITE" ? 1 : 2) == null) {
         ui.setStatus(Status["aborted"]);
+        gs.boardManager.clearMoves();
+        boardSetup.canInteract(false);
       }
     };
   
     socket.onerror = function () { };
+
   })();
