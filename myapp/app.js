@@ -17,7 +17,6 @@ app.use(express.static(__dirname + "/public"));
 app.get("/play", indexRouter);
 
 
-//TODO: move to routes/index
 app.get("/", (req, res) => {
   res.render("splash.ejs", {
     gamesInitialized: gameStatus.gamesInitialized,
@@ -97,32 +96,33 @@ wss.on("connection", function connection(ws) {
     if (isPlayerWHITE) {
       if (oMsg.type == messages.T_SET_WHITE) {
         gameObj.playerBLUE.send(message);
-        gameObj.setStatus("SET WHITE PIECE");
+        gameObj.setStatus("WHITEPLAYED");
+        gameObj.setBoard(message.data, 1);
       }
 
       if (oMsg.type == messages.T_GAME_WON_BY) {
         gameObj.playerBLUE.send(message);
-        gameObj.setStatus("GAME COMPLETED")
+        gameObj.setStatus(oMsg.data);
         gameStatus.gamesCompleted++;
       }
     } 
     else {
       if (oMsg.type == messages.T_SET_BLUE) {
         gameObj.playerWHITE.send(message);
-        gameObj.setStatus("SET BLUE PIECE");
+        gameObj.setStatus("BLUEPLAYED");
+        gameObj.setBoard(message.data, 2);
       }
 
       if (oMsg.type == messages.T_GAME_WON_BY) {
         gameObj.playerWHITE.send(message);
-        gameObj.setStatus("GAME COMPLETED")
-        //game was won by somebody, update statistics
+
+        gameObj.setStatus(oMsg.data);
         gameStatus.gamesCompleted++;
       }
 
       //tell white they can start
       if(oMsg.type == messages.T_BEGIN_GAME){
         gameObj.playerWHITE.send(message);
-        gameObj.setStatus("GAME BEGIN");
       }
     }
   });
@@ -138,22 +138,30 @@ wss.on("connection", function connection(ws) {
       /*
        * if possible, abort the game; if not, the game is already completed
        */
+      
       let gameObj = websockets[con.id];
+      if(gameObj.hasOnePlayerConnected){//if one player in the game, revert game back to 0 players
+        gameObj.setStatus("0 JOINT");
+      }
 
       if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
+
         gameObj.setStatus("ABORTED");
         gameStatus.gamesAborted++;
-
         /*
          * determine whose connection remains open;
          * close it
          */
-        try {
-          gameObj.playerWHITE.close();
-          gameObj.playerWHITE = null;
-        } catch (e) {
-          console.log("Player WHITE closing: " + e);
+
+        if(gameObj.playerWHITE != null){
+          try {
+            gameObj.playerWHITE.close();
+            gameObj.playerWHITE = null;
+          } catch (e) {
+            console.log("Player WHITE closing: " + e);
+          }
         }
+
 
         try {
           gameObj.playerBLUE.close();

@@ -5,6 +5,16 @@ var game = function(gameID) {
     this.id = gameID;
     this.wordToGuess = null; //first player to join the game, can set the word
     this.gameState = "0 JOINT"; //"A" means A won, "B" means B won, "ABORTED" means the game was aborted
+      this.board = [//use array for board
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 1, 2, 0, 0, 0,
+        0, 0, 0, 2, 1, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0];
+
   };
   
   /*
@@ -35,6 +45,14 @@ var game = function(gameID) {
     [0, 0, 0, 0, 0, 0, 0, 0], //BLUE WON
     [0, 0, 0, 0, 0, 0, 0, 0] //ABORTED
   ];
+
+  game.prototype.setBoard = function(coordinate, color) {
+    this.board[coordinate] = color;
+  }
+
+  game.prototype.getBoard = function() {
+    return this.board;
+  }
   
   game.prototype.isValidTransition = function(from, to) {
     console.assert(
@@ -105,32 +123,14 @@ var game = function(gameID) {
     }
   };
   
-  game.prototype.setWord = function(w) {
-    console.assert(
-      typeof w == "string",
-      "%s: Expecting a string, got a %s",
-      arguments.callee.name,
-      typeof w
-    );
-  
-    //two possible options for the current game state:
-    //1 JOINT, 2 JOINT
-    if (this.gameState != "1 JOINT" && this.gameState != "2 JOINT") {
-      return new Error(
-        "Trying to set word, but game status is %s",
-        this.gameState
-      );
-    }
-    this.wordToGuess = w;
-  };
-  
-  game.prototype.getWord = function() {
-    return this.wordToGuess;
-  };
-  
   game.prototype.hasTwoConnectedPlayers = function() {
     return this.gameState == "2 JOINT";
   };
+
+  game.prototype.hasOnePlayerConnected = function() {
+    return this.gameState == "1 JOINT";
+  };
+  
   
   game.prototype.addPlayer = function(p) {
     console.assert(
@@ -156,7 +156,7 @@ var game = function(gameID) {
       this.setStatus("2 JOINT");
     }
   
-    if (this.playerWHITE == null) {
+    if (this.gameState == "1 JOINT") {
       this.playerWHITE = p;
       return "WHITE";
     } else {
